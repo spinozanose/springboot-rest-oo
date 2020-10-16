@@ -1,6 +1,7 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
 import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidDomainDataException;
+import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidSearchParametersException;
 import com.spinozanose.springbootrestoo.implementation.exceptions.ObjectNotFoundException;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
@@ -12,6 +13,17 @@ import java.util.Map;
 
 import static org.junit.jupiter.api.Assertions.*;
 
+/**
+ * Because we have decoupled from Spring in the Controller class, the testing
+ * has been simplified. Here we just instantiate the service, swap out the
+ * dependent services with mocks or nulls, and then call the methods. Notice that
+ * the design of the mock is like the way you use Mockito: you set the response
+ * that you want the service to return. You can also test that the arguments passed
+ * into the mock are what is expected.
+ *
+ * Easy peasy. Straightforward Java, and no messing with the Application Context or
+ * classpath scanning!
+ */
 @SpringBootTest
 public class MyAggregateServiceTest {
 
@@ -30,7 +42,7 @@ public class MyAggregateServiceTest {
     }
 
     @Test
-    public void shouldReturnListOfIdsOnValidSearch() {
+    public void shouldReturnListOfIdsOnValidSearch() throws InvalidSearchParametersException {
         // right now there is no real logic because we have not decided
         // on an implementation. The service result just passes through.
         final String testId = "searchServiceTestId";

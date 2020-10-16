@@ -1,9 +1,11 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
-import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidDomainDataException;
-
 import java.util.Map;
 
+/**
+ * Not implemented. We are pretending that we will be saving to the local file system. Of course,
+ * we could swap out an iplementation for MongoDb, a Database, or S3, or anything else.
+ */
 public class MyAggregateFileStoreRepository implements MyAggregateRepository {
 
     @Override

@@ -14,6 +14,15 @@ import org.springframework.web.server.ResponseStatusException;
 import java.net.URI;
 import java.util.Map;
 
+/**
+ * This is the main implementation of the Springboot functionality and is implemented in the
+ * standard Springboot way. However, the transactional logic for the operations is in the
+ * MyAggregateService.
+ *
+ * Notice that all of the RESTful interface concerns are managed here and do not bleed into the
+ * rest of MyAggregate. For example, converting application exceptions to the appropriate RESTful
+ * responses is left as much as possible to the Springboot framework: it is why we have it.
+ */
 @RestController
 @RequestMapping("/v1/myaggregate")
 public class MyAggregateController {
@@ -21,9 +30,16 @@ public class MyAggregateController {
     @Autowired
     private MyAggregateService service;
 
+    /**
+     * We throw exceptions that are handled through the Spring ControllerAdvice functionality.
+     *
+     * @param body
+     * @return ResponseEntity<URI>
+     * @throws InvalidDomainDataException
+     */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<URI> create(@RequestBody String body) {
+    public ResponseEntity<URI> create(@RequestBody String body) throws InvalidDomainDataException {
         final Map<String, Object> jsonObject;
         // Note: JSONObject class extends HashMap
         try {
@@ -33,13 +49,9 @@ public class MyAggregateController {
         } catch (ParseException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON Parse Error", e);
         }
-
-        final MyAggregate myAggregate;
-        try {
-            myAggregate = service.create(jsonObject);
-        } catch (InvalidDomainDataException e) {
-            throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "Invalid data", e);
-        }
+        //
+        final MyAggregate myAggregate = service.create(jsonObject);
+        //
         final String id = (String) myAggregate.toMap().get("id");
         final URI location = URI.create("/v1/myaggregate/" + id);
         return ResponseEntity.created(location).build();

@@ -2,6 +2,7 @@ package com.spinozanose.springbootrestoo.myAggregate;
 
 import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidDomainDataException;
 import com.spinozanose.springbootrestoo.implementation.MyUUID;
+import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidSearchParametersException;
 import com.spinozanose.springbootrestoo.implementation.exceptions.ObjectNotFoundException;
 import org.springframework.stereotype.Service;
 
@@ -11,14 +12,17 @@ import java.util.Map;
 /**
  * This service is for managing the aggregate and its encapsulated objects. It
  * specifically manages the application transactions, which includes creation and
- * persistence of objects.
- *
- * It throws application exceptions that must be handled by the controller when there
- * is something wrong.
+ * persistence of objects. It throws application exceptions that must be handled by
+ * the controller when there is something wrong.
  *
  * It does not know or speak JSON or anything else from the Controller, and it has no
  * domain logic, either. In particular it does not know the content of the DTOs. It
  * absolutely does no validation!
+ *
+ * In the usual OO implementation this would be called the controller, and might be combined
+ * with the functionality for managing the client interface. But since we are taking advantage
+ * of the Springboot service injection functionality, and the mocking of it in the tests, we
+ * call this a service.
  *
  * Notice that there are five operations (methods) for data management because RESTful
  * applications are data providers. If this were an event-driven system the methods
@@ -42,7 +46,7 @@ class MyAggregateService {
     MyAggregateRepository repository = new MyAggregateFileStoreRepository();
     MyAggregateSearchService searchService = new MyAggregateElasticSearchService();
 
-    public List<String> search(final Map<String, String> searchParams) throws IllegalArgumentException {
+    List<String> search(final Map<String, String> searchParams) throws InvalidSearchParametersException {
         // Here we can check a cache or any other optimizations
         return searchService.search(searchParams);
     }
@@ -61,7 +65,7 @@ class MyAggregateService {
      * @return MyAggregate
      * @throws InvalidDomainDataException
      */
-    public MyAggregate create(final Map<String, Object> data) throws InvalidDomainDataException {
+    MyAggregate create(final Map<String, Object> data) throws InvalidDomainDataException {
 
         if (data.get("id") != null) {
             throw new InvalidDomainDataException("Do not specify an id when creating a new MyAggregateRoot!");
@@ -73,7 +77,7 @@ class MyAggregateService {
         return newMyAggregateRoot;
     }
 
-    public MyAggregate read(final String id) {
+    MyAggregate read(final String id) {
         final Map<String, Object> data = repository.read(id);
         if (data == null) return null;
         try {
@@ -83,7 +87,7 @@ class MyAggregateService {
         }
     }
 
-    public void update(final Map<String, Object> data) throws ObjectNotFoundException, InvalidDomainDataException {
+    void update(final Map<String, Object> data) throws ObjectNotFoundException, InvalidDomainDataException {
         final String id = (String) data.get("id");
         if (id == null) throw new ObjectNotFoundException("No id specified!");
         final Map<String, Object> existingData = repository.read(id);
@@ -110,7 +114,7 @@ class MyAggregateService {
      * @param id
      * @throws ObjectNotFoundException
      */
-    public void delete(final String id) throws ObjectNotFoundException {
+    void delete(final String id) throws ObjectNotFoundException {
         final Map<String, Object> data = repository.read(id);
         if (data == null) {
             throw new ObjectNotFoundException("No MyAggregate with id " + id);

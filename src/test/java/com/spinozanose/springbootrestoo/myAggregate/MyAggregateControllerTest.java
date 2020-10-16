@@ -23,6 +23,14 @@ import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.header;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
+/**
+ * These are tests of the controller, and the interface to the controller. To do this we use
+ * the Spring WebMvcTest capability. We mock the service (with Mockito) to make sure we are
+ * only testing the controller.
+ *
+ * This is not a complete set of tests. We may want to test lots more things, like Content-Type
+ * and JSON parsing and the error handling.
+ */
 @WebMvcTest(MyAggregateController.class)
 public class MyAggregateControllerTest {
 
