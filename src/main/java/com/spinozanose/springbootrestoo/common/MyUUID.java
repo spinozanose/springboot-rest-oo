@@ -1,4 +1,4 @@
-package com.spinozanose.springbootrestoo.implementation;
+package com.spinozanose.springbootrestoo.common;
 
 import java.util.UUID;
 

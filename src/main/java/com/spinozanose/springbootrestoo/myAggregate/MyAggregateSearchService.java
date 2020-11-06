@@ -1,6 +1,6 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
-import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidSearchParametersException;
+import com.spinozanose.springbootrestoo.common.exceptions.InvalidSearchParametersException;
 
 import java.util.List;
 import java.util.Map;

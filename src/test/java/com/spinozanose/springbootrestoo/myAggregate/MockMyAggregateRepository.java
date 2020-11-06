@@ -6,7 +6,7 @@ import java.util.Map;
 /**
  * This is a mock for use in the tests of the MyAggregateService.
  */
-public class MyAggregateRepositoryMock implements MyAggregateRepository {
+public class MockMyAggregateRepository implements MyAggregateRepository {
 
     Map<String, Object> object = new HashMap<>();
 

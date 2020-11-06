@@ -1,7 +1,7 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
-import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidDomainDataException;
-import com.spinozanose.springbootrestoo.implementation.exceptions.ObjectNotFoundException;
+import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
+import com.spinozanose.springbootrestoo.common.exceptions.ObjectNotFoundException;
 import org.json.simple.JSONObject;
 import org.json.simple.parser.JSONParser;
 import org.json.simple.parser.ParseException;

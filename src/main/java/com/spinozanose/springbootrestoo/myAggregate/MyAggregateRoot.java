@@ -1,6 +1,6 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
-import com.spinozanose.springbootrestoo.implementation.exceptions.InvalidDomainDataException;
+import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
 
 import java.util.Collections;
 import java.util.HashMap;

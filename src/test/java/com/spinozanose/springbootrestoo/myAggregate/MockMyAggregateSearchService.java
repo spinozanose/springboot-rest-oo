@@ -7,7 +7,7 @@ import java.util.Map;
 /**
  * Here we define what we want the search to return.
  */
-public class MyAggregateSearchServiceMock implements MyAggregateSearchService {
+public class MockMyAggregateSearchService implements MyAggregateSearchService {
 
     final List<String> ids = new ArrayList<>();
 

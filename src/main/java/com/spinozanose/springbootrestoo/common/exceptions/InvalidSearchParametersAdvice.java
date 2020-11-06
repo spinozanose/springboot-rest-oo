@@ -1,4 +1,4 @@
-package com.spinozanose.springbootrestoo.implementation.exceptions;
+package com.spinozanose.springbootrestoo.common.exceptions;
 
 import org.springframework.http.HttpStatus;
 import org.springframework.web.bind.annotation.ControllerAdvice;
@@ -7,13 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class InvalidDomainDataAdvice {
+public class InvalidSearchParametersAdvice {
 
     @ResponseBody
-    @ExceptionHandler(InvalidDomainDataException.class)
+    @ExceptionHandler(InvalidSearchParametersException.class)
     @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String invalidDomainDataHandler(InvalidDomainDataException ex) {
+    String objectNotFoundHandler(ObjectNotFoundException ex) {
         return ex.getMessage();
     }
 }
-

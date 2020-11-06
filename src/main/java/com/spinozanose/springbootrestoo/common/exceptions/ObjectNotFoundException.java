@@ -1,4 +1,4 @@
-package com.spinozanose.springbootrestoo.implementation.exceptions;
+package com.spinozanose.springbootrestoo.common.exceptions;
 
 public class ObjectNotFoundException extends Exception {
 
