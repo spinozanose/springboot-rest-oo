@@ -1,6 +1,8 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
+import com.spinozanose.springbootrestoo.email.EmailMessage;
+import com.spinozanose.springbootrestoo.email.EmailSendingService;
 
 import java.util.Collections;
 import java.util.HashMap;
@@ -41,16 +43,18 @@ import java.util.Objects;
 class MyAggregateRoot implements MyAggregate{
 
     private final String id;
+    private final EmailSendingService emailSendingService;
     private int aNumber;
     private String aString;
     private InnerObject innerObject;
     private final MyAggregateRepository repository;
 
-    MyAggregateRoot(Map<String, Object> data, MyAggregateRepository repository) throws InvalidDomainDataException {
+    MyAggregateRoot(final Map<String, Object> data, final MyAggregateRepository repository, final EmailSendingService emailSendingService) throws InvalidDomainDataException {
         if (!isValid(data)) {
             throw new InvalidDomainDataException("Cannot create new MyAggregate with invalid data!");
         }
         this.repository = repository;
+        this.emailSendingService = emailSendingService;
         this.id = (String) data.get("id");
         this.aNumber = (int) data.get("aNumber");
         this.aString = (String) data.get("aString");
@@ -69,7 +73,7 @@ class MyAggregateRoot implements MyAggregate{
     }
 
     /**
-     * Not all the data needs to be returned, even in this case we do. We only should return data
+     * Not all the data needs to be returned, even if in this case we do. We only should return data
      * that is appropriate to share.
      *
      * @return Map<String, Object>
@@ -89,15 +93,14 @@ class MyAggregateRoot implements MyAggregate{
         repository.write(this.toMap());
     }
 
-    /**
-     * For testing, this can be made package-private.
-     *
-     * @param data
-     * @return boolean
-     */
-    private static boolean isValid(Map<String, Object> data) {
-        // Validate here . . .
-        return true;
+    void sendEmail() {
+        // here we set the values of the email message based on data in the aggregate.
+        final String sender = null;
+        final String[] recipients = null;
+        final String subject = null;
+        final String message = null;
+        EmailMessage email = new EmailMessage(sender, recipients, subject, message);
+        emailSendingService.sendEmail(email);
     }
 
     @Override
@@ -110,7 +113,18 @@ class MyAggregateRoot implements MyAggregate{
 
     @Override
     public int hashCode() {
-        return Objects.hash(id);
+        return id.hashCode();
+    }
+
+    /**
+     * For testing, this is package-private.
+     *
+     * @param data
+     * @return boolean
+     */
+    static boolean isValid(Map<String, Object> data) {
+        // Validate here . . .
+        return true;
     }
 }
 

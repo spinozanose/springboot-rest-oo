@@ -3,6 +3,7 @@ package com.spinozanose.springbootrestoo.myAggregate;
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidSearchParametersException;
 import com.spinozanose.springbootrestoo.common.exceptions.ObjectNotFoundException;
+import com.spinozanose.springbootrestoo.email.EmailSendingService;
 import org.junit.jupiter.api.Test;
 import org.springframework.boot.test.context.SpringBootTest;
 
@@ -22,20 +23,21 @@ import static org.junit.jupiter.api.Assertions.*;
  * into the mock are what are expected.
  *
  * Easy peasy. Straightforward Java, and no messing with the Application Context or
- * classpath scanning!
+ * trying to work around classpath scanning!
  */
 @SpringBootTest
 public class MyAggregateFactoryTest {
 
     private static final String TEST_ID = "testId";
-    private static final MyAggregateRepository repository = null;
     private static final MyAggregateRoot TEST_AGGREGATE;
     static {
+        final MyAggregateRepository repository = null;
+        final EmailSendingService emailer = null;
         final Map<String, Object> data = new HashMap<>();
         data.put("id", TEST_ID);
         data.put("aNumber", 23);
         try {
-            TEST_AGGREGATE = new MyAggregateRoot(data, repository);
+            TEST_AGGREGATE = new MyAggregateRoot(data, repository, emailer);
         } catch (InvalidDomainDataException e) {
             throw new RuntimeException(e);
         }

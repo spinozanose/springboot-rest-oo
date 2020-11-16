@@ -2,6 +2,7 @@ package com.spinozanose.springbootrestoo.myAggregate;
 
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
 import com.spinozanose.springbootrestoo.common.exceptions.ObjectNotFoundException;
+import com.spinozanose.springbootrestoo.email.EmailSendingService;
 import org.json.simple.JSONObject;
 import org.junit.jupiter.api.Test;
 import org.mockito.Mockito;
@@ -38,11 +39,12 @@ public class MyAggregateControllerTest {
     private static final MyAggregateRoot TEST_AGGREGATE;
     static {
         final MyAggregateRepository dao = null;
+        final EmailSendingService emailer = null;
         final Map<String, Object> data = new HashMap<>();
         data.put("id", TEST_ID);
         data.put("aNumber", 23);
         try {
-            TEST_AGGREGATE = new MyAggregateRoot(data, dao);
+            TEST_AGGREGATE = new MyAggregateRoot(data, dao, emailer);
         } catch (InvalidDomainDataException e) {
             throw new RuntimeException(e);
         }

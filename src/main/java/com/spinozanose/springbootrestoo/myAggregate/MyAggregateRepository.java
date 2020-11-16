@@ -7,8 +7,7 @@ import java.util.Map;
  *
  * The choice to have a MyAggregateRepository instead of a generic Repository for the
  * entire application is arbitrary. Either would be fine, and in a real application
- * you probably would have an inheritance hierarchy with shared functionality in the
- * base class.
+ * you could have an inheritance hierarchy with shared functionality in a base class.
  */
 interface MyAggregateRepository {
 
