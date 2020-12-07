@@ -41,10 +41,11 @@ public class MyAggregateControllerTest {
         final MyAggregateRepository dao = null;
         final EmailSendingService emailer = null;
         final Map<String, Object> data = new HashMap<>();
-        data.put("id", TEST_ID);
-        data.put("aNumber", 23);
+        data.put(MyAggregateDto.ID, TEST_ID);
+        data.put(MyAggregateDto.A_NUMBER, 23);
+        final MyAggregateDto dto = new MyAggregateDto(data);
         try {
-            TEST_AGGREGATE = new MyAggregateRoot(data, dao, emailer);
+            TEST_AGGREGATE = new MyAggregateRoot(dto, dao, emailer);
         } catch (InvalidDomainDataException e) {
             throw new RuntimeException(e);
         }

@@ -19,7 +19,7 @@ public class MockMyAggregateRepository implements MyAggregateRepository {
 
     @Override
     public Map<String, Object> read(String id) {
-        if (object.get("id").equals(id)) {
+        if (object.get(MyAggregateDto.ID).equals(id)) {
             return object;
         } else {
             return null;

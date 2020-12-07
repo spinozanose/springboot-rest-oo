@@ -28,7 +28,7 @@ class MyAggregatesController {
      *
      * An alternative implementation could pass back a list of URIs, if that makes more sense.
      *
-     * @param searchParams
+     * @param allRequestParams
      * @return List of MyAggregates (as JSON)
      * @throws InvalidSearchParametersException
      */

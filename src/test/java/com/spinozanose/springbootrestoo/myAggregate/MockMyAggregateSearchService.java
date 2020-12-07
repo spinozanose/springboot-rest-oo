@@ -9,10 +9,10 @@ import java.util.Map;
  */
 public class MockMyAggregateSearchService implements MyAggregateSearchService {
 
-    final List<String> ids = new ArrayList<>();
+    final List<String> myAggregatesObjects = new ArrayList<>();
 
     @Override
     public List<String> search(Map<String, String> searchParams) {
-        return ids;
+        return myAggregatesObjects;
     }
 }

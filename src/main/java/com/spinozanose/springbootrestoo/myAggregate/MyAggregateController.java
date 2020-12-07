@@ -1,5 +1,6 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
+import com.spinozanose.springbootrestoo.common.exceptions.DomainPersistenceException;
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
 import com.spinozanose.springbootrestoo.common.exceptions.ObjectNotFoundException;
 import org.json.simple.JSONObject;
@@ -39,7 +40,7 @@ public class MyAggregateController {
      */
     @PostMapping
     @ResponseStatus(HttpStatus.CREATED)
-    public ResponseEntity<URI> create(@RequestBody String body) throws InvalidDomainDataException {
+    public ResponseEntity<URI> create(@RequestBody String body) throws InvalidDomainDataException, DomainPersistenceException {
         final Map<String, Object> jsonObject;
         // Note: JSONObject class extends HashMap
         try {
@@ -52,13 +53,12 @@ public class MyAggregateController {
         //
         final MyAggregate myAggregate = service.create(jsonObject);
         //
-        final String id = (String) myAggregate.toMap().get("id");
-        final URI location = URI.create("/v1/myaggregate/" + id);
+        final URI location = URI.create("/v1/myaggregate/" + myAggregate.toDto().id);
         return ResponseEntity.created(location).build();
     }
 
     @GetMapping("/{id}")
-    public ResponseEntity<Map<String,Object>> read( @PathVariable String id) {
+    public ResponseEntity<Map<String,Object>> read( @PathVariable String id) throws DomainPersistenceException {
         final MyAggregate myAggregate = service.read(id);
         if (myAggregate==null) {
             throw new ResponseStatusException(HttpStatus.NOT_FOUND, "Object not found");
@@ -67,9 +67,10 @@ public class MyAggregateController {
     }
 
     @PutMapping("/{id}")
-    public void update(@RequestBody String body, @PathVariable String id) throws InvalidDomainDataException, ObjectNotFoundException {
+    public void update(@RequestBody String body, @PathVariable String id) throws InvalidDomainDataException, ObjectNotFoundException, DomainPersistenceException {
         final Map<String, Object> data;
         try {
+            // this is an ok cast
             data = (JSONObject) new JSONParser().parse(body);
         } catch (ClassCastException e) {
             throw new ResponseStatusException(HttpStatus.BAD_REQUEST, "JSON is not an Object", e);
@@ -85,7 +86,7 @@ public class MyAggregateController {
     public void delete(@RequestParam(value = "id") String id) {
         try {
             service.delete(id);
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException | DomainPersistenceException e) {
             // Delete is idempotent, so this is fine.
         }
     }

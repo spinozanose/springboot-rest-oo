@@ -1,5 +1,6 @@
 package com.spinozanose.springbootrestoo.myAggregate;
 
+import com.spinozanose.springbootrestoo.common.exceptions.DomainPersistenceException;
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidDomainDataException;
 import com.spinozanose.springbootrestoo.common.exceptions.InvalidSearchParametersException;
 import com.spinozanose.springbootrestoo.common.exceptions.ObjectNotFoundException;
@@ -34,20 +35,21 @@ public class MyAggregateFactoryTest {
         final MyAggregateRepository repository = null;
         final EmailSendingService emailer = null;
         final Map<String, Object> data = new HashMap<>();
-        data.put("id", TEST_ID);
-        data.put("aNumber", 23);
+        data.put(MyAggregateDto.ID, TEST_ID);
+        data.put(MyAggregateDto.A_NUMBER, 23);
+        final MyAggregateDto dto = new MyAggregateDto(data);
         try {
-            TEST_AGGREGATE = new MyAggregateRoot(data, repository, emailer);
+            TEST_AGGREGATE = new MyAggregateRoot(dto, repository, emailer);
         } catch (InvalidDomainDataException e) {
             throw new RuntimeException(e);
         }
     }
 
     @Test
-    public void shouldReturnListOfIdsOnValidSearch() throws InvalidSearchParametersException {
+    public void shouldReturnListOfObjectsOnValidSearch() throws InvalidSearchParametersException {
         // right now there is no real logic because we have not decided
         // on an implementation. The service result just passes through.
-        final String testId = "searchServiceTestId";
+        final String testObject = "this is a test object in malformed JSON";
         final MyAggregateFactory factory = new MyAggregateFactory();
         //
         final MockMyAggregateSearchService searchService = new MockMyAggregateSearchService();
@@ -55,13 +57,13 @@ public class MyAggregateFactoryTest {
         factory.repository = null;
         factory.searchService = searchService;
         //
-        searchService.ids.add(testId);
+        searchService.myAggregatesObjects.add(testObject);
         final Map<String, String> searchParameters = null;
-        final List<String> returnedIds = factory.search(searchParameters);
+        final List<String> returnedObjects = factory.search(searchParameters);
         //
-        final List<String> expectedIds = new ArrayList<>();
-        expectedIds.add(testId);
-        assertEquals(expectedIds, returnedIds);
+        final List<String> expectedObjects = new ArrayList<>();
+        expectedObjects.add(testObject);
+        assertEquals(expectedObjects, returnedObjects);
     }
 
     @Test
@@ -74,14 +76,14 @@ public class MyAggregateFactoryTest {
         boolean exceptionThrown = false;
         try {
             final MyAggregate createdMyAggregate = factory.create(data);
-        } catch (InvalidDomainDataException e) {
+        } catch (InvalidDomainDataException | DomainPersistenceException e) {
             exceptionThrown = true;
         }
         assertTrue(exceptionThrown);
     }
 
     @Test
-    public void shouldPersistAndReturnNewAggregateOnCreate() throws InvalidDomainDataException {
+    public void shouldPersistAndReturnNewAggregateOnCreate() throws InvalidDomainDataException, DomainPersistenceException {
         final MyAggregateFactory factory = new MyAggregateFactory();
         factory.searchService = null;
         MockMyAggregateRepository mockRepository = new MockMyAggregateRepository();
@@ -89,14 +91,14 @@ public class MyAggregateFactoryTest {
         //
         // we have to copy the map because it is unmodifiable.
         final Map<String,Object> data = new HashMap<>(TEST_AGGREGATE.toMap());
-        data.remove("id");
+        data.remove(MyAggregateDto.ID);
         final MyAggregate createdMyAggregate = factory.create(data);
-        assertNotEquals(createdMyAggregate.toMap().get("id"), TEST_AGGREGATE.toMap().get("id"));
+        assertNotEquals(createdMyAggregate.toMap().get(MyAggregateDto.ID), TEST_AGGREGATE.toMap().get(MyAggregateDto.ID));
         assertEquals(createdMyAggregate.toMap(), mockRepository.object);
     }
 
     @Test
-    public void shouldReturnMyAggregateOnRead() {
+    public void shouldReturnMyAggregateOnRead() throws DomainPersistenceException {
         final MyAggregateFactory factory = new MyAggregateFactory();
         factory.searchService = null;
         final MockMyAggregateRepository mockRepository = new MockMyAggregateRepository();
@@ -109,7 +111,7 @@ public class MyAggregateFactoryTest {
     }
 
     @Test
-    public void shouldChangeMyAggregateOnUpdate() throws InvalidDomainDataException, ObjectNotFoundException {
+    public void shouldChangeMyAggregateOnUpdate() throws InvalidDomainDataException, ObjectNotFoundException, DomainPersistenceException {
         final MyAggregateFactory factory = new MyAggregateFactory();
         factory.searchService = null;
         final MockMyAggregateRepository mockRepository = new MockMyAggregateRepository();
@@ -118,15 +120,15 @@ public class MyAggregateFactoryTest {
         //
         final Map<String, Object> newData = new HashMap<>(TEST_AGGREGATE.toMap());
         final String newString = "Bananas don't fly!";
-        newData.put("aString", newString);
+        newData.put(MyAggregateDto.A_STRING, newString);
         factory.update(newData);
         // we compare the data since the equals() method only considers id
         assertNotEquals(TEST_AGGREGATE.toMap(), mockRepository.object);
-        assertEquals(newString, mockRepository.object.get("aString"));
+        assertEquals(newString, mockRepository.object.get(MyAggregateDto.A_STRING));
     }
 
     @Test
-    public void shouldRemoveMyAggregateOnDelete() throws ObjectNotFoundException {
+    public void shouldRemoveMyAggregateOnDelete() throws ObjectNotFoundException, DomainPersistenceException {
         final MyAggregateFactory factory = new MyAggregateFactory();
         factory.searchService = null;
         final MockMyAggregateRepository mockRepository = new MockMyAggregateRepository();
@@ -149,7 +151,7 @@ public class MyAggregateFactoryTest {
         boolean errorThrown = false;
         try {
             factory.delete("nonexistent id");
-        } catch (ObjectNotFoundException e) {
+        } catch (ObjectNotFoundException | DomainPersistenceException e) {
             errorThrown = true;
         }
         //

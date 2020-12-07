@@ -7,12 +7,12 @@ import org.springframework.web.bind.annotation.ResponseBody;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 @ControllerAdvice
-public class InvalidSearchParametersAdvice {
+public class DomainPersistenceAdvice {
 
     @ResponseBody
-    @ExceptionHandler(InvalidSearchParametersException.class)
-    @ResponseStatus(HttpStatus.BAD_REQUEST)
-    String invalidSearchParameterHandler(ObjectNotFoundException ex) {
+    @ExceptionHandler(DomainPersistenceException.class)
+    @ResponseStatus(HttpStatus.INTERNAL_SERVER_ERROR)
+    String failedDomainPersistenceHandler(DomainPersistenceException ex) {
         return ex.getMessage();
     }
 }
